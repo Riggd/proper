@@ -80,7 +80,7 @@ So that I can enforce a consistent data structure across both the Plugin and CLI
 **Given** a clean Monorepo environment
 **When** I create `packages/core` and install `zod`
 **Then** I can import a `ComponentSchema` that defines the shape of a Figma Node (id, name, type, children)
-**And** the schema usage a `ComponentRegistry` pattern (e.g., Union or Map) to allow easy addition of new components without rewrites
+**And** the schema uses a `ComponentRegistry` pattern (e.g., Union or Map) to allow easy addition of new components without rewrites
 **And** I can import specific schemas for `Button`, `Input`, and `Card` that validate their identifying properties (e.g., name starts with "Button")
 
 ### Story 1.2: Implement Boolean State Validation
