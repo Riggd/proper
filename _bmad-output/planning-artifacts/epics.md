@@ -80,7 +80,7 @@ So that I can enforce a consistent data structure across both the Plugin and CLI
 **Given** a clean Monorepo environment
 **When** I create `packages/core` and install `zod`
 **Then** I can import a `ComponentSchema` that defines the shape of a Figma Node (id, name, type, children)
-**And** the schema usage a `ComponentRegistry` pattern (e.g., Union or Map) to allow easy addition of new components without rewrites
+**And** the schema uses a `ComponentRegistry` pattern (e.g., Union or Map) to allow easy addition of new components without rewrites
 **And** I can import specific schemas for `Button`, `Input`, and `Card` that validate their identifying properties (e.g., name starts with "Button")
 
 ### Story 1.2: Implement Boolean State Validation
@@ -207,7 +207,7 @@ So that I don't have to manually create weird hidden frames like "Code Only Prop
 **Given** an audit result with a missing "accessibilityLabel" prop
 **When** I click the "Auto-Scaffold" button
 **Then** the plugin creates a new variant property or hidden layer structure in Figma
-**And** specifically creates a Frame named `_properties` containing text layers for each prop (Nathan Curtis pattern)
+**And** specifically creates a Frame named `"Code only props"` containing text layers for each prop (Nathan Curtis pattern)
 **And** the component structure matches the "Code Only Props" spec
 
 ### Story 2.6: Optimistic UI & Polish
@@ -268,7 +268,7 @@ So that I can clearly reference the design intent.
 ### Story 3.3: Integrate Core Rules Engine (Parity)
 
 As a Developer,
-I want the CLI to usage the EXACT same validation logic as the Designer Plugin,
+I want the CLI to use the EXACT same validation logic as the Designer Plugin,
 So that "Pass" means the same thing for everyone.
 
 **Acceptance Criteria:**
