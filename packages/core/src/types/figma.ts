@@ -29,3 +29,15 @@ export interface ValidationFinding {
 }
 
 export type ComponentType = 'Button' | 'Input' | 'Card' | 'Unknown';
+
+/**
+ * Determine component type from node name.
+ * Shared utility for consistent type detection across plugin and proxy.
+ */
+export function getComponentType(name: string): ComponentType {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('button')) return 'Button';
+    if (lowerName.includes('input') || lowerName.includes('textfield') || lowerName.includes('text field')) return 'Input';
+    if (lowerName.includes('card')) return 'Card';
+    return 'Unknown';
+}

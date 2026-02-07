@@ -9,6 +9,15 @@ import { validateTokenUsage, TokenFinding } from './tokenUsageValidation';
 export const VERSION = '1.0.0';
 
 /**
+ * Type-safe severity mapping from ValidationFinding type to AuditFinding severity.
+ */
+const SEVERITY_MAP: Record<string, 'error' | 'warning' | 'info'> = {
+    Error: 'error',
+    Warning: 'warning',
+    Info: 'info',
+};
+
+/**
  * Normalized finding with severity field as required by AC.
  */
 export interface AuditFinding {
@@ -45,7 +54,7 @@ export function validate(componentSet: FigmaComponentSet): AuditResult {
     const booleanFindings = validateBooleanState(componentSet);
     for (const finding of booleanFindings) {
         findings.push({
-            severity: finding.type.toLowerCase() as 'error' | 'warning' | 'info',
+            severity: SEVERITY_MAP[finding.type] ?? 'info',
             message: finding.message,
             nodeId: finding.nodeId,
             rule: finding.rule,
@@ -56,7 +65,7 @@ export function validate(componentSet: FigmaComponentSet): AuditResult {
     const accessibilityFindings = validateAccessibility(componentSet) as AccessibilityFinding[];
     for (const finding of accessibilityFindings) {
         findings.push({
-            severity: finding.type.toLowerCase() as 'error' | 'warning' | 'info',
+            severity: SEVERITY_MAP[finding.type] ?? 'info',
             message: finding.message,
             nodeId: finding.nodeId,
             rule: finding.rule,
@@ -68,7 +77,7 @@ export function validate(componentSet: FigmaComponentSet): AuditResult {
     const tokenFindings = validateTokenUsage(componentSet) as TokenFinding[];
     for (const finding of tokenFindings) {
         findings.push({
-            severity: finding.type.toLowerCase() as 'error' | 'warning' | 'info',
+            severity: SEVERITY_MAP[finding.type] ?? 'info',
             message: finding.message,
             nodeId: finding.nodeId,
             rule: finding.rule,

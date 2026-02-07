@@ -1,4 +1,4 @@
-import { FigmaComponentSet, FigmaVariant } from '@proper/core';
+import { FigmaComponentSet, FigmaVariant, getComponentType } from '@proper/core';
 
 /**
  * Transform raw Figma node data into our FigmaComponentSet format.
@@ -19,17 +19,6 @@ export interface RawFigmaNode {
     cornerRadius?: number | 'mixed';
     // Tokens/Variables
     boundVariables?: Record<string, string>;
-}
-
-/**
- * Get component type from node name
- */
-function getComponentType(name: string): 'Button' | 'Input' | 'Card' | 'Unknown' {
-    const lowerName = name.toLowerCase();
-    if (lowerName.includes('button')) return 'Button';
-    if (lowerName.includes('input') || lowerName.includes('textfield') || lowerName.includes('text field')) return 'Input';
-    if (lowerName.includes('card')) return 'Card';
-    return 'Unknown';
 }
 
 /**

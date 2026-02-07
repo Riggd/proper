@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import type { SelectionInfo, SandboxToUIMessage, AuditResult } from '../shared/messages';
 import './App.css';
 
+// Configuration - use environment variables with dev fallbacks
+const API_URL = import.meta.env.VITE_PROPPER_API_URL || 'http://localhost:3000';
+const API_KEY = import.meta.env.VITE_PROPPER_API_KEY || 'dev-secret';
+
 type PluginState = 'idle' | 'selected' | 'auditing' | 'results' | 'scaffolding';
 
 export const App: React.FC = () => {
@@ -13,46 +17,50 @@ export const App: React.FC = () => {
     // Listen for messages from the sandbox
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            const msg = event.data.pluginMessage as SandboxToUIMessage;
-            if (!msg) return;
+            try {
+                const msg = event.data.pluginMessage as SandboxToUIMessage;
+                if (!msg) return;
 
-            switch (msg.type) {
-                case 'SELECTION_CHANGED':
-                    setSelection(msg.selection);
-                    if (msg.selection) {
-                        setState('selected');
-                        setError(null);
-                    } else {
-                        setState('idle');
-                    }
-                    setAuditResult(null);
-                    break;
+                switch (msg.type) {
+                    case 'SELECTION_CHANGED':
+                        setSelection(msg.selection);
+                        if (msg.selection) {
+                            setState('selected');
+                            setError(null);
+                        } else {
+                            setState('idle');
+                        }
+                        setAuditResult(null);
+                        break;
 
-                case 'AUDIT_RESULT':
-                    setAuditResult(msg.result);
-                    setState('results');
-                    break;
-
-                case 'DATA_READY':
-                    performRemoteAudit(msg.selection);
-                    break;
-
-                case 'SCAFFOLD_COMPLETE':
-                    if (msg.success) {
-                        setError(null);
-                        // Re-audit after scaffolding
-                        setState('auditing');
-                        postToSandbox({ type: 'AUDIT_REQUEST' });
-                    } else {
-                        setError('Scaffold generation failed');
+                    case 'AUDIT_RESULT':
+                        setAuditResult(msg.result);
                         setState('results');
-                    }
-                    break;
+                        break;
 
-                case 'ERROR':
-                    setError(msg.message);
-                    setState('selected');
-                    break;
+                    case 'DATA_READY':
+                        performRemoteAudit(msg.selection);
+                        break;
+
+                    case 'SCAFFOLD_COMPLETE':
+                        if (msg.success) {
+                            setError(null);
+                            // Re-audit after scaffolding
+                            setState('auditing');
+                            postToSandbox({ type: 'AUDIT_REQUEST' });
+                        } else {
+                            setError('Scaffold generation failed');
+                            setState('results');
+                        }
+                        break;
+
+                    case 'ERROR':
+                        setError(msg.message);
+                        setState('selected');
+                        break;
+                }
+            } catch (e) {
+                console.error('Plugin message handling error:', e);
             }
         };
 
@@ -62,11 +70,11 @@ export const App: React.FC = () => {
 
     const performRemoteAudit = async (data: SelectionInfo) => {
         try {
-            const response = await fetch('http://localhost:3000/api/audit', {
+            const response = await fetch(`${API_URL}/api/audit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-propper-key': 'dev-secret',
+                    'x-propper-key': API_KEY,
                 },
                 body: JSON.stringify({ component: data }),
             });
