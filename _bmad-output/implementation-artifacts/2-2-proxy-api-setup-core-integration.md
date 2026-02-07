@@ -1,6 +1,6 @@
 # Story 2.2: Proxy API Setup & Core Integration
 
-**Status:** ready-for-dev
+**Status:** review
 
 ## User Story
 
@@ -29,11 +29,33 @@
 
 ## Tasks
 
-- [ ] Initialize `apps/proxy` with Next.js.
-- [ ] Implement POST `/api/audit` endpoint.
-- [ ] Add `x-propper-key` validation.
-- [ ] Integrate `packages/core` validation logic.
-- [ ] Test with `curl` or Postman.
+- [x] Initialize `apps/proxy` with Next.js.
+- [x] Implement POST `/api/audit` endpoint.
+- [x] Add `x-propper-key` validation.
+- [x] Integrate `packages/core` validation logic.
+- [x] Test with `curl` or Postman.
+
+## Dev Agent Record
+
+### Implementation
+- Created `transform.ts` to convert Figma node JSON to `FigmaComponentSet`
+- Created App Router API route at `/api/audit`
+- Integrated `validate()` and `VERSION` from `@proper/core`
+
+### Completion Notes
+- ✅ GET /api/audit returns health + version
+- ✅ POST /api/audit validates components
+- ✅ Auth rejects requests without valid key (tested)
+
+## File List
+
+**New:**
+- `apps/proxy/src/lib/transform.ts`
+- `apps/proxy/src/app/api/audit/route.ts`
+
+## Change Log
+
+- 2026-02-07: Implemented proxy API with core integration
 
 ## References
-- [Epic 2: Designer Audit & Repair Workflow](_bmad-output/planning-artifacts/epics.md)
+- [Epic 2](_bmad-output/planning-artifacts/epics.md)

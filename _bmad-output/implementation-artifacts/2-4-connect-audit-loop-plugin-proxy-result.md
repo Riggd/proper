@@ -1,6 +1,6 @@
 # Story 2.4: Connect Audit Loop (Plugin -> Proxy -> Result)
 
-**Status:** ready-for-dev
+**Status:** review
 
 ## User Story
 
@@ -10,29 +10,37 @@
 
 ## Acceptance Criteria
 
-1. **Given** I have selected a component and clicked "Audit"
-2. **When** the Proxy returns the audit results
-3. **Then** the UI updates to show a "Score" (0-100) and a list of issues
-4. **And** findings are visually grouped by Severity (Errors must be fixed, Warnings are optional)
-5. **And** the "Auditing" spinner disappears (<5s total time)
+1. ✅ **Given** I have selected a component and clicked "Audit"
+2. ✅ **When** the Proxy returns the audit results
+3. ✅ **Then** the UI updates to show a "Score" (0-100) and a list of issues
+4. ✅ **And** findings are visually grouped by Severity (Errors must be fixed, Warnings are optional)
+5. ✅ **And** the "Auditing" spinner disappears (<5s total time)
 
-## Technical Requirements (Developer Guardrails)
+## Dev Agent Record
 
-### Architecture Compliance
-- **Location:** `apps/plugin/src/ui` (Display), `apps/plugin/src/main` (Network).
-- **Communication:** REST call to Proxy.
+### Implementation Summary
+- **Audit Service:** Implemented `performRemoteAudit(data)` in `apps/plugin/src/ui/App.tsx` using native `fetch`.
+- **Authentication:** Requests authenticated with `x-propper-key` header (currently `dev-secret`).
+- **Message Flow:** 
+  1. UI sends `AUDIT_REQUEST` to Sandbox
+  2. Sandbox extracts fresh data via `getSelectionInfo()` and sends `DATA_READY`
+  3. UI receives data and calls `POST /api/audit` on Proxy
+  4. Proxy transforms data, runs validation, returns scored results
+  5. UI displays results with severity-based styling
+- **Error Handling:** Network failures and API errors gracefully displayed to user.
 
-### Implementation Details
-- **Network Request:** `fetch` from Plugin UI (or Main if needed, but UI usually has network access in Figma plugins).
-- **Scorecard UI:** Component to display the results clearly.
-- **Error Handling:** Handle network errors or proxy timeouts.
+### Files Modified
+- `apps/plugin/src/ui/App.tsx` - Added `performRemoteAudit` function with fetch API call
+- `apps/plugin/src/plugin/main.ts` - Sandbox responds to AUDIT_REQUEST with DATA_READY
+- `apps/plugin/src/shared/messages.ts` - Added `DATA_READY` message type
 
 ## Tasks
 
-- [ ] Implement `auditService` in Plugin UI to call Proxy.
-- [ ] Build `Scorecard` UI component.
-- [ ] Implement loading states.
-- [ ] Wiring: Selection -> Extract -> API Call -> Display Results.
+- [x] Implement `auditService` in Plugin UI to call Proxy (as `performRemoteAudit`).
+- [x] Build `Scorecard` UI component (integrated in results state).
+- [x] Implement loading states.
+- [x] Wiring: Selection -> Extract -> API Call -> Display Results.
 
 ## References
 - [Epic 2: Designer Audit & Repair Workflow](_bmad-output/planning-artifacts/epics.md)
+

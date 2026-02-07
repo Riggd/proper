@@ -1,0 +1,289 @@
+/* Plugin Container */
+.plugin-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--figma-color-bg);
+    color: var(--figma-color-text);
+}
+
+/* Header */
+.plugin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--figma-color-border);
+}
+
+.plugin-header h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.plugin-header .version {
+    font-size: 11px;
+    color: var(--figma-color-text-secondary);
+}
+
+/* Main Content */
+.plugin-main {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+/* Empty State (Idle) */
+.state-idle .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 32px;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-state h2 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--figma-color-text-secondary);
+}
+
+/* Selected State */
+.state-selected {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.selection-info {
+    padding: 16px;
+    background: var(--figma-color-bg-secondary);
+    border-radius: 8px;
+}
+
+.component-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+    background: var(--figma-color-bg-brand);
+    color: var(--figma-color-text-onbrand);
+    margin-bottom: 8px;
+}
+
+.selection-info h2 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.node-type {
+    margin: 0;
+    font-size: 12px;
+    color: var(--figma-color-text-secondary);
+}
+
+/* Audit Button */
+.audit-button {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    background: var(--figma-color-bg-brand);
+    color: var(--figma-color-text-onbrand);
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.audit-button:hover {
+    opacity: 0.9;
+}
+
+.audit-button:active {
+    opacity: 0.8;
+}
+
+/* Auditing State */
+.state-auditing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    gap: 16px;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--figma-color-border);
+    border-top-color: var(--figma-color-bg-brand);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Results State */
+.state-results {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.score {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.score.passed {
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+}
+
+.score.failed {
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+
+.score-icon {
+    font-size: 24px;
+}
+
+/* Findings List */
+.findings {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.finding {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.finding.error {
+    background: rgba(231, 76, 60, 0.1);
+    border-left: 3px solid #e74c3c;
+}
+
+.finding.warning {
+    background: rgba(241, 196, 15, 0.1);
+    border-left: 3px solid #f1c40f;
+}
+
+.finding.info {
+    background: rgba(52, 152, 219, 0.1);
+    border-left: 3px solid #3498db;
+}
+
+.finding-severity {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.finding.error .finding-severity {
+    color: #e74c3c;
+}
+
+.finding.warning .finding-severity {
+    color: #f1c40f;
+}
+
+.finding.info .finding-severity {
+    color: #3498db;
+}
+
+/* Scaffold Button */
+.scaffold-button {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    background: #2ecc71;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.scaffold-button:hover {
+    opacity: 0.9;
+}
+
+.scaffold-button:active {
+    opacity: 0.8;
+}
+
+/* Re-Audit Button */
+.reaudit-button {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--figma-color-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--figma-color-text);
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.reaudit-button:hover {
+    background: var(--figma-color-bg-secondary);
+}
+
+/* Error Toast */
+.error-toast {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    padding: 12px 16px;
+    background: #e74c3c;
+    color: white;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}

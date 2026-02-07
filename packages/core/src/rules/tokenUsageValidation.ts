@@ -98,6 +98,8 @@ export function validateTokenUsage(componentSet: FigmaComponentSet): TokenFindin
             const category = TOKEN_PROPERTIES[propKey];
             if (!category) continue;
 
+            if (propValue.startsWith('variable:')) continue;
+
             const numericValue = parseValue(propValue);
             if (numericValue === undefined) continue;
 
