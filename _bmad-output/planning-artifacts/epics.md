@@ -207,7 +207,7 @@ So that I don't have to manually create weird hidden frames like "Code Only Prop
 **Given** an audit result with a missing "accessibilityLabel" prop
 **When** I click the "Auto-Scaffold" button
 **Then** the plugin creates a new variant property or hidden layer structure in Figma
-**And** specifically creates a Frame named `_properties` containing text layers for each prop (Nathan Curtis pattern)
+**And** specifically creates a Frame named `"Code only props"` containing text layers for each prop (Nathan Curtis pattern)
 **And** the component structure matches the "Code Only Props" spec
 
 ### Story 2.6: Optimistic UI & Polish
