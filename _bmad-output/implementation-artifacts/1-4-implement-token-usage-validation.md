@@ -1,6 +1,6 @@
 # Story 1.4: Implement Token Usage Validation
 
-**Status:** ready-for-dev
+**Status:** review
 
 ## User Story
 
@@ -28,11 +28,39 @@
 
 ## Tasks
 
-- [ ] Define the Token Map (hardcoded for now or loaded from config).
-- [ ] Implement `validateTokenUsage` function in `packages/core`.
-- [ ] Implement "closest match" logic.
-- [ ] Write unit tests for hardcoded values.
-- [ ] Export the validation function.
+- [x] Define the Token Map (hardcoded for now or loaded from config).
+- [x] Implement `validateTokenUsage` function in `packages/core`.
+- [x] Implement "closest match" logic.
+- [x] Write unit tests for hardcoded values.
+- [x] Export the validation function.
+
+## Dev Agent Record
+
+### Implementation Plan
+- Created `TokenMap` with `radius` and `spacing` categories
+- Implemented `validateTokenUsage` to check for hardcoded values in CSS properties
+- Implemented `findClosestToken` with fuzzy matching (max 4px distance)
+- Created `TokenFinding` type extending `ValidationFinding` with `suggestedToken` and `suggestedValue`
+
+### Completion Notes
+- ✅ `TokenMap` defines radius (none, sm, md, lg, xl, full) and spacing (none, xs, sm, md, lg, xl, 2xl)
+- ✅ Validates border-radius, borderRadius, padding, margin, gap properties
+- ✅ Returns Warning type findings with closest token suggestions
+- ✅ 8 new unit tests covering all acceptance criteria
+- ✅ All 36 tests pass (28 existing + 8 new)
+
+## File List
+
+**New:**
+- `packages/core/src/rules/tokenUsageValidation.ts`
+- `packages/core/src/rules/tokenUsageValidation.test.ts`
+
+**Modified:**
+- `packages/core/src/index.ts`
+
+## Change Log
+
+- 2026-02-07: Implemented token usage validation with fuzzy matching for closest token suggestions
 
 ## References
 - [Epic 1: Design System Rules Foundation](_bmad-output/planning-artifacts/epics.md)

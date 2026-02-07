@@ -1,6 +1,6 @@
 # Story 1.3: Implement Accessibility Validation
 
-**Status:** ready-for-dev
+**Status:** review
 
 ## User Story
 
@@ -27,10 +27,38 @@
 
 ## Tasks
 
-- [ ] Implement `validateAccessibility` function in `packages/core`.
-- [ ] Define which components require accessibility labels.
-- [ ] Write unit tests for missing accessibilty props.
-- [ ] Export the validation function.
+- [x] Implement `validateAccessibility` function in `packages/core`.
+- [x] Define which components require accessibility labels.
+- [x] Write unit tests for missing accessibilty props.
+- [x] Export the validation function.
+
+## Dev Agent Record
+
+### Implementation Plan
+- Created `accessibilityValidation.ts` with `validateAccessibility` function
+- Defined `InteractiveComponents` array: Button, Input (Card excluded as non-interactive)
+- Extended `ValidationFinding` with `AccessibilityFinding` interface including `suggestedFix` field
+- Implemented case-insensitive property matching for aria-label, accessibilityLabel, ariaLabel
+
+### Completion Notes
+- ✅ `validateAccessibility` validates Button and Input for accessibility labels
+- ✅ Non-interactive components (Card, Unknown) skip validation
+- ✅ Returns `suggestedFix: 'aria-label'` per acceptance criteria
+- ✅ 7 new unit tests added covering all acceptance criteria
+- ✅ All 28 tests pass (21 existing + 7 new)
+
+## File List
+
+**New:**
+- `packages/core/src/rules/accessibilityValidation.ts`
+- `packages/core/src/rules/accessibilityValidation.test.ts`
+
+**Modified:**
+- `packages/core/src/index.ts`
+
+## Change Log
+
+- 2026-02-07: Implemented accessibility validation for interactive components
 
 ## References
 - [Epic 1: Design System Rules Foundation](_bmad-output/planning-artifacts/epics.md)

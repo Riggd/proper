@@ -2,17 +2,17 @@
     "name": "Propper",
     "id": "propper-plugin",
     "api": "1.0.0",
-    "main": "dist/index.html",
+    "main": "dist/code.js",
+    "ui": "dist/index.html",
     "capabilities": [],
     "enableProposedApi": false,
     "editorType": [
-        "figma",
-        "figjam"
+        "figma"
     ],
-    "ui": "dist/index.html",
     "networkAccess": {
         "allowedDomains": [
             "*"
-        ]
+        ],
+        "reasoning": "Standard plugin requirement for auditing components via external proxy API."
     }
 }

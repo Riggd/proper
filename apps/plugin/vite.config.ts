@@ -10,11 +10,13 @@ export default defineConfig({
         assetsInlineLimit: 100000000,
         chunkSizeWarningLimit: 100000000,
         cssCodeSplit: false,
-
+        outDir: 'dist',
         rollupOptions: {
+            input: {
+                main: 'index.html'
+            },
             output: {
                 inlineDynamicImports: true,
-                // manualChunks removed to avoid conflict with inlineDynamicImports
             },
         },
     },

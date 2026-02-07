@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { FigmaNode } from '../types/figma';
 
 const BaseNode = z.object({
     id: z.string(),
