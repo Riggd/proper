@@ -1,6 +1,6 @@
 # Story 1.1: Initialize Core Package & Component Schemas
 
-**Status:** ready-for-dev
+**Status:** review
 
 ## User Story
 
@@ -50,14 +50,14 @@ packages/core/
 
 ## Tasks
 
-- [ ] Initialize `packages/core` workspace.
-- [ ] Install `zod` dependency.
-- [ ] Configure `package.json` and `tsconfig.json`.
-- [ ] Define `ComponentSchema` (base node props) in `src/rules/schemas.ts`.
-- [ ] Implement `ButtonSchema`, `InputSchema`, `CardSchema`.
-- [ ] Create `ComponentRegistry` in `src/rules/registry.ts`.
-- [ ] Export everything via `src/index.ts`.
-- [ ] Write unit tests to verify valid/invalid node structures.
+- [x] Initialize `packages/core` workspace.
+- [x] Install `zod` dependency.
+- [x] Configure `package.json` and `tsconfig.json`.
+- [x] Define `ComponentSchema` (base node props) in `src/rules/schemas.ts`.
+- [x] Implement `ButtonSchema`, `InputSchema`, `CardSchema`.
+- [x] Create `ComponentRegistry` in `src/rules/registry.ts`.
+- [x] Export everything via `src/index.ts`.
+- [x] Write unit tests to verify valid/invalid node structures.
 
 ## References
 - [Epic 1: Design System Rules Foundation](_bmad-output/planning-artifacts/epics.md)
