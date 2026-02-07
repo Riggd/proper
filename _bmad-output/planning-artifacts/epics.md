@@ -259,7 +259,7 @@ So that I can clearly reference the design intent.
 ### Story 3.3: Integrate Core Rules Engine (Parity)
 
 As a Developer,
-I want the CLI to usage the EXACT same validation logic as the Designer Plugin,
+I want the CLI to use the EXACT same validation logic as the Designer Plugin,
 So that "Pass" means the same thing for everyone.
 
 **Acceptance Criteria:**
