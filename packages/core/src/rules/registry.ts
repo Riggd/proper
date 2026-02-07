@@ -9,21 +9,12 @@ export const ComponentRegistry = {
 };
 
 export function getComponentSchema(type: ComponentType): z.ZodType<any> {
-    switch (type) {
-        case 'Button':
-            return ButtonSchema;
-        case 'Input':
-            return InputSchema;
-        case 'Card':
-            return CardSchema;
-        default:
-            return ComponentSchema;
-    }
+    return (ComponentRegistry as Record<string, z.ZodType<any>>)[type] ?? ComponentSchema;
 }
 
 export function identifyComponent(node: { name: string }): ComponentType {
-    if (node.name.startsWith('Button')) return 'Button';
-    if (node.name.startsWith('Input')) return 'Input';
-    if (node.name.startsWith('Card')) return 'Card';
+    for (const type of Object.keys(ComponentRegistry)) {
+        if (node.name.startsWith(type)) return type as ComponentType;
+    }
     return 'Unknown';
 }

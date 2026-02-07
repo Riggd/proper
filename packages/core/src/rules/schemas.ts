@@ -8,30 +8,27 @@ const BaseNode = z.object({
 });
 
 // Base schema for all components
-export const ComponentSchema: z.ZodType<FigmaNode> = BaseNode.extend({
+export const ComponentSchema: z.ZodObject<any, any, any> = BaseNode.extend({
     children: z.lazy(() => z.array(ComponentSchema)).optional(),
 });
 
 // Specific schemas
-export const ButtonSchema = BaseNode.extend({
+export const ButtonSchema = ComponentSchema.extend({
     name: z.string().refine((val) => val.startsWith('Button'), {
         message: "Node name must start with 'Button'",
     }),
-    children: z.lazy(() => z.array(ComponentSchema)).optional(),
 });
 
-export const InputSchema = BaseNode.extend({
+export const InputSchema = ComponentSchema.extend({
     name: z.string().refine((val) => val.startsWith('Input'), {
         message: "Node name must start with 'Input'",
     }),
-    children: z.lazy(() => z.array(ComponentSchema)).optional(),
 });
 
-export const CardSchema = BaseNode.extend({
+export const CardSchema = ComponentSchema.extend({
     name: z.string().refine((val) => val.startsWith('Card'), {
         message: "Node name must start with 'Card'",
     }),
-    children: z.lazy(() => z.array(ComponentSchema)).optional(),
 });
 
 export type ComponentSchemaType = z.infer<typeof ComponentSchema>;
