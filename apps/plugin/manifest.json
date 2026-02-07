@@ -1,0 +1,18 @@
+{
+    "name": "Propper",
+    "id": "propper-plugin",
+    "api": "1.0.0",
+    "main": "dist/index.html",
+    "capabilities": [],
+    "enableProposedApi": false,
+    "editorType": [
+        "figma",
+        "figjam"
+    ],
+    "ui": "dist/index.html",
+    "networkAccess": {
+        "allowedDomains": [
+            "*"
+        ]
+    }
+}

@@ -23,3 +23,15 @@ __pycache__/
 # BMAD
 _bmad/
 
+
+# Build
+dist/
+build/
+.next/
+coverage/
+
+# Turbo
+.turbo/
+
+# Logs
+pnpm-debug.log
