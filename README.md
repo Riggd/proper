@@ -47,6 +47,48 @@ Propper doesn't just say "Fail." it teaches. It explains *why* a prop is needed 
 
 ---
 
+## 🏗️ Project Structure
+
+This project is a monorepo managed by [Turborepo](https://turbo.build/repo) and [pnpm](https://pnpm.io/).
+
+*   **`apps/plugin`**: The Propper Figma Plugin (Vite + React).
+*   **`apps/proxy`**: The AI Proxy (Next.js) serving as the bridge.
+*   **`packages/core`**: Shared logic and utilities.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+*   [Node.js](https://nodejs.org/) (>= 18)
+*   [pnpm](https://pnpm.io/) (>= 9)
+
+### Installation
+
+```bash
+pnpm install
+```
+
+## 💻 Development
+
+Run all applications simultaneously:
+
+```bash
+pnpm dev
+```
+
+*   **Plugin:** `http://localhost:5173`
+*   **Proxy:** `http://localhost:3000`
+
+## 📦 Building
+
+To build all apps and packages:
+
+```bash
+pnpm build
+```
+
+---
+
 ## 🗺️ MVP Roadmap (Hackathon)
 
 - [x] **Product Discovery:** Finalize vision and MVP scope.
