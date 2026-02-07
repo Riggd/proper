@@ -29,8 +29,8 @@ This document provides the complete epic and story breakdown for Propper, decomp
 - **FR-API03:** The Proxy MUST sanitize input data to ensure no PII (Private Identifiable Information) or irrelevant hidden layer data is processed by the LLM.
 - **FR-API04:** The Proxy MUST return a structured JSON response containing the Audit Score, Findings List, and Auto-Fix Data.
 - **FR-CLI01:** The CLI MUST be callable via terminal command `propper audit <figma-url>`.
-- **FR-CLI02:** The CLI MUST authenticate with Figma using a personal access token (configured via env var).
-- **FR-CLI03:** The CLI MUST fetch the live component data from Figma's REST API.
+- **FR-CLI02:** [DEPRECATED] The CLI authenticates via the local Desktop App bridge (no PAT required).
+- **FR-CLI03:** The CLI MUST fetch component data via the `figma-console` MCP Server (Desktop Bridge) to ensure parity and avoid rate limits.
 - **FR-CLI04:** The CLI MUST execute the same audit logic (via the Proxy or shared library) as the Plugin to ensure parity.
 - **FR-CLI05:** The CLI MUST output the audit results in human-readable text format (PASS/FAIL) to the console.
 
@@ -223,6 +223,15 @@ So that it doesn't interrupt my design flow.
 **Then** the UI immediately shows a "Fixed" state (optimistic update)
 **And** the actual Figma layer change completes in the background (<1000ms perceived)
 **And** if the backend operation fails, the UI reverts to the "Audit Failed" state and shows an error toast
+### Story 2.7: Implement Anonymous Telemetry
+**Goal:** Track usage and stability without compromising privacy.
+**User Value:** As a Maintainer, I can see how many audits are running and catch crash rates early.
+**Acceptance Criteria:**
+**Given** an audit is performed (via Plugin or CLI)
+**When** the operation completes
+**Then** an anonymous event is sent to the telemetry service (e.g., PostHog/Vercel Analytics)
+**And** the payload includes ONLY: Event Type (Audit/Fix), Success/Fail Status, and Error Code
+**And** NO PII (File Names, Layer Names, User IDs) is transmitted
 
 ### Epic 3: Developer Verification Workflow
 **Goal:** Enable zero-friction handoff by allowing developers to verify design readiness in their native environment.
