@@ -1,0 +1,70 @@
+# generated: 2026-02-07
+# project: proper
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-02-07
+project: proper
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Design System Rules Foundation
+  epic-1: backlog
+  1-1-initialize-core-package-component-schemas: ready-for-dev
+  1-2-implement-boolean-state-validation: backlog
+  1-3-implement-accessibility-validation: backlog
+  1-4-implement-token-usage-validation: backlog
+  1-5-rule-engine-export-self-test: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Designer Audit & Repair Workflow
+  epic-2: backlog
+  2-1-plugin-ui-scaffold-communication: backlog
+  2-2-proxy-api-setup-core-integration: backlog
+  2-3-implement-component-selection-extraction: backlog
+  2-4-connect-audit-loop-plugin-proxy-result: backlog
+  2-5-implement-auto-scaffold-layer-generation: backlog
+  2-6-optimistic-ui-polish: backlog
+  2-7-implement-anonymous-telemetry: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Developer Verification Workflow
+  epic-3: backlog
+  3-1-cli-scaffold-mcp-client-implementation: backlog
+  3-2-implement-component-audit-via-url: backlog
+  3-3-integrate-core-rules-engine-parity: backlog
+  3-4-cli-output-exit-codes: backlog
+  3-5-local-pre-commit-verification-hook: backlog
+  epic-3-retrospective: optional
