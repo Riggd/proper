@@ -50,7 +50,7 @@ Propper doesn't just say "Fail." it teaches. It explains *why* a prop is needed 
 ## 🗺️ MVP Roadmap (Hackathon)
 
 - [x] **Product Discovery:** Finalize vision and MVP scope.
-- [ ] **Knowledge Logic:** Generate `rules.json` from DS Knowledge Base.
+- [x] **Knowledge Logic:** Generate `rules.json` from DS Knowledge Base.
 - [ ] **Figma Plugin:** Implement Audit + Auto-Scaffold logic.
 - [ ] **CLI Skill:** Build the developer audit command.
 - [ ] **Vercel Proxy:** Deploy the keyless bridge for the plugin.

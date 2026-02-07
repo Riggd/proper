@@ -1,0 +1,108 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "components": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9]+$": {
+                    "type": "object",
+                    "properties": {
+                        "rules": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "severity": {
+                                        "type": "string",
+                                        "enum": [
+                                            "error",
+                                            "warning",
+                                            "info"
+                                        ]
+                                    },
+                                    "detection": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "prop-existence",
+                                                    "prop-value",
+                                                    "conditional-prop-absence"
+                                                ]
+                                            },
+                                            "propName": {
+                                                "type": "string"
+                                            },
+                                            "condition": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "type"
+                                        ]
+                                    },
+                                    "fix": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "add-prop",
+                                                    "update-prop"
+                                                ]
+                                            },
+                                            "propName": {
+                                                "type": "string"
+                                            },
+                                            "defaultValue": {
+                                                "type": [
+                                                    "string",
+                                                    "boolean",
+                                                    "number"
+                                                ]
+                                            }
+                                        },
+                                        "required": [
+                                            "type"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "name",
+                                    "description",
+                                    "severity",
+                                    "detection"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "rules"
+                    ]
+                }
+            }
+        }
+    },
+    "required": [
+        "version",
+        "components"
+    ]
+}

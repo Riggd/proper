@@ -1,0 +1,134 @@
+{
+    "$schema": "./schemas/rules.schema.json",
+    "version": "1.0.0",
+    "components": {
+        "Button": {
+            "rules": [
+                {
+                    "id": "button-loading-state",
+                    "name": "Async Loading State",
+                    "description": "Buttons that trigger asynchronous actions (like submitting a form) must have a 'loading' prop to indicate progress to the user.",
+                    "severity": "warning",
+                    "detection": {
+                        "type": "prop-existence",
+                        "propName": "loading"
+                    },
+                    "fix": {
+                        "type": "add-prop",
+                        "propName": "loading",
+                        "defaultValue": false
+                    }
+                },
+                {
+                    "id": "button-variant-prop",
+                    "name": "Component Variant",
+                    "description": "Button components must use the 'variant' prop to define their visual style (primary, secondary, etc.) instead of separate components.",
+                    "severity": "error",
+                    "detection": {
+                        "type": "prop-existence",
+                        "propName": "variant"
+                    },
+                    "fix": {
+                        "type": "add-prop",
+                        "propName": "variant",
+                        "defaultValue": "primary"
+                    }
+                },
+                {
+                    "id": "button-size-prop",
+                    "name": "Component Size",
+                    "description": "Button components must use the 'size' prop (sm, md, lg) to define dimensions.",
+                    "severity": "error",
+                    "detection": {
+                        "type": "prop-existence",
+                        "propName": "size"
+                    },
+                    "fix": {
+                        "type": "add-prop",
+                        "propName": "size",
+                        "defaultValue": "md"
+                    }
+                },
+                {
+                    "id": "button-disabled-state",
+                    "name": "Disabled State",
+                    "description": "Buttons must have a 'disabled' boolean prop to handle inactive states accessible.",
+                    "severity": "error",
+                    "detection": {
+                        "type": "prop-existence",
+                        "propName": "disabled"
+                    },
+                    "fix": {
+                        "type": "add-prop",
+                        "propName": "disabled",
+                        "defaultValue": false
+                    }
+                },
+                {
+                    "id": "icon-button-label",
+                    "name": "Icon Button Accessibility",
+                    "description": "Icon-only buttons (where variant is 'icon' or hasIcon is true but no text) must have an 'aria-label' for screen readers.",
+                    "severity": "error",
+                    "detection": {
+                        "type": "conditional-prop-absence",
+                        "condition": "isIconOnly",
+                        "propName": "aria-label"
+                    },
+                    "fix": {
+                        "type": "add-prop",
+                        "propName": "aria-label",
+                        "defaultValue": "Action Name"
+                    }
+                }
+            ]
+        },
+        "TextField": {
+            "rules": [
+                {
+                    "id": "input-label",
+                    "name": "Input Label",
+                    "description": "Text fields must have a visible 'label' prop or an 'aria-label' for accessibility.",
+                    "severity": "error",
+                    "detection": {
+                        "type": "prop-existence",
+                        "propName": "label"
+                    },
+                    "fix": {
+                        "type": "add-prop",
+                        "propName": "label",
+                        "defaultValue": "Label"
+                    }
+                },
+                {
+                    "id": "input-error-prop",
+                    "name": "Validation Error State",
+                    "description": "Text fields must have an 'error' or 'errorMessage' prop to display validation feedback.",
+                    "severity": "warning",
+                    "detection": {
+                        "type": "prop-existence",
+                        "propName": "error"
+                    },
+                    "fix": {
+                        "type": "add-prop",
+                        "propName": "error",
+                        "defaultValue": false
+                    }
+                }
+            ]
+        },
+        "Checkbox": {
+            "rules": [
+                {
+                    "id": "checkbox-label",
+                    "name": "Checkbox Label",
+                    "description": "Checkboxes usually require a side label. If not visible, an 'aria-label' is required.",
+                    "severity": "warning",
+                    "detection": {
+                        "type": "prop-existence",
+                        "propName": "label"
+                    }
+                }
+            ]
+        }
+    }
+}
