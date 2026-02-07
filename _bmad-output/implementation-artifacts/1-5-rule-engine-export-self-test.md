@@ -1,6 +1,6 @@
 # Story 1.5: Rule Engine Export & Self-Test
 
-**Status:** ready-for-dev
+**Status:** review
 
 ## User Story
 
@@ -29,11 +29,39 @@
 
 ## Tasks
 
-- [ ] Implement the aggregate `validate(node)` function.
-- [ ] Define `AuditResult` and `AuditFinding` interfaces.
-- [ ] Create a comprehensive test suite in `packages/core`.
-- [ ] Ensure `pnpm test` runs the suite successfully.
-- [ ] Verify exports in `package.json`.
+- [x] Implement the aggregate `validate(node)` function.
+- [x] Define `AuditResult` and `AuditFinding` interfaces.
+- [x] Create a comprehensive test suite in `packages/core`.
+- [x] Ensure `pnpm test` runs the suite successfully.
+- [x] Verify exports in `package.json`.
+
+## Dev Agent Record
+
+### Implementation Plan
+- Created `validate.ts` with aggregate `validate` function calling all rule validators
+- Defined `AuditResult` with componentId, componentName, passed, findings, validatedAt, version
+- Defined `AuditFinding` with severity ('error' | 'warning' | 'info'), message, nodeId, rule, suggestedFix, suggestedToken
+- Added `VERSION` constant ('1.0.0') for parity checks
+
+### Completion Notes
+- ✅ `validate` aggregates booleanState, accessibility, and tokenUsage validators
+- ✅ `AuditFinding` includes severity field as required
+- ✅ `VERSION` exported for parity checks
+- ✅ 5 new tests: valid component (0 errors), invalid component (expected errors), hardcoded warning, severity field validation, VERSION export
+- ✅ All 41 tests pass (36 existing + 5 new)
+
+## File List
+
+**New:**
+- `packages/core/src/rules/validate.ts`
+- `packages/core/src/rules/validate.test.ts`
+
+**Modified:**
+- `packages/core/src/index.ts`
+
+## Change Log
+
+- 2026-02-07: Implemented aggregate validate function with AuditResult and VERSION exports
 
 ## References
 - [Epic 1: Design System Rules Foundation](_bmad-output/planning-artifacts/epics.md)

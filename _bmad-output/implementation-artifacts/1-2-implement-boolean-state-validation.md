@@ -1,6 +1,6 @@
 # Story 1.2: Implement Boolean State Validation
 
-**Status:** ready-for-dev
+**Status:** review
 
 ## User Story
 
@@ -28,10 +28,38 @@
 
 ## Tasks
 
-- [ ] Implement `validateBooleanState` function in `packages/core`.
-- [ ] Define the list of required states for each component type (e.g., Button needs disabled, loading).
-- [ ] Write unit tests for missing states.
-- [ ] Export the validation function for use in the main `validate` loop.
+- [x] Implement `validateBooleanState` function in `packages/core`.
+- [x] Define the list of required states for each component type (e.g., Button needs disabled, loading).
+- [x] Write unit tests for missing states.
+- [x] Export the validation function for use in the main `validate` loop.
+
+## Dev Agent Record
+
+### Implementation Plan
+- Added `FigmaComponentSet`, `FigmaVariant`, and `ValidationFinding` types to `figma.ts`
+- Created `booleanStateValidation.ts` with `validateBooleanState` function
+- Defined `RequiredStates` config object mapping component types to required boolean states
+- Implemented case-insensitive state matching for variant names and properties
+
+### Completion Notes
+- ✅ `validateBooleanState` validates Button (disabled, loading), Input (disabled, error), Card (disabled)
+- ✅ Unknown component types skip validation gracefully
+- ✅ 7 new unit tests added covering all acceptance criteria
+- ✅ All 21 tests pass (14 existing + 7 new)
+
+## File List
+
+**New:**
+- `packages/core/src/rules/booleanStateValidation.ts`
+- `packages/core/src/rules/booleanStateValidation.test.ts`
+
+**Modified:**
+- `packages/core/src/types/figma.ts`
+- `packages/core/src/index.ts`
+
+## Change Log
+
+- 2026-02-07: Implemented boolean state validation with configurable required states per component type
 
 ## References
 - [Epic 1: Design System Rules Foundation](_bmad-output/planning-artifacts/epics.md)

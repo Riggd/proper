@@ -42,11 +42,11 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   # Epic 1: Design System Rules Foundation
   epic-1: in-progress
-  1-1-initialize-core-package-component-schemas: review
-  1-2-implement-boolean-state-validation: backlog
-  1-3-implement-accessibility-validation: backlog
-  1-4-implement-token-usage-validation: backlog
-  1-5-rule-engine-export-self-test: backlog
+  1-1-initialize-core-package-component-schemas: done
+  1-2-implement-boolean-state-validation: review
+  1-3-implement-accessibility-validation: review
+  1-4-implement-token-usage-validation: review
+  1-5-rule-engine-export-self-test: review
   epic-1-retrospective: optional
 
   # Epic 2: Designer Audit & Repair Workflow
