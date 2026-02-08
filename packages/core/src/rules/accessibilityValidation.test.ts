@@ -57,6 +57,32 @@ describe('detectButtonVariant', () => {
 
         expect(detectButtonVariant(variant)).toBe('text');
     });
+    it('should ignore common variant keys when checking for text content', () => {
+        const variant: FigmaVariant = {
+            id: '1:1',
+            name: 'State=Default, Size=Medium',
+            properties: {
+                State: 'Default',
+                Size: 'Medium',
+                Icon: 'search',
+            },
+        };
+
+        expect(detectButtonVariant(variant)).toBe('icon-only');
+    });
+
+    it('should NOT ignore variant keys if they look like text content (e.g. Label)', () => {
+        const variant: FigmaVariant = {
+            id: '1:1',
+            name: 'State=Default',
+            properties: {
+                State: 'Default',
+                Label: 'Submit',
+            },
+        };
+
+        expect(detectButtonVariant(variant)).toBe('text');
+    });
 });
 
 describe('validateAccessibility', () => {
@@ -157,6 +183,31 @@ describe('validateAccessibility', () => {
             const findings = validateAccessibility(componentSet);
 
             expect(findings).toEqual([]);
+        });
+        it('should require aria-label for icon-only button even when variant props are present', () => {
+            const componentSet: FigmaComponentSet = {
+                id: '1:1',
+                name: 'Icon Button',
+                type: 'COMPONENT_SET',
+                componentType: 'Button',
+                variants: [
+                    {
+                        id: '1:2',
+                        name: 'State=Default, Size=Medium',
+                        properties: {
+                            State: 'Default',
+                            Size: 'Medium',
+                            Icon: 'IconInstance',
+                        },
+                    },
+                ],
+            };
+
+            const findings = validateAccessibility(componentSet);
+
+            const ariaLabelFinding = findings.find(f => f.suggestedFix === 'aria-label');
+            expect(ariaLabelFinding).toBeDefined();
+            expect(ariaLabelFinding?.message).toContain('Icon-only button variant(s) missing accessibility label');
         });
     });
 

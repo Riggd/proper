@@ -29,11 +29,34 @@ function buildPropRuleContext(variant: FigmaVariant, componentType: ComponentTyp
         return k.includes('icon') || v.includes('icon');
     });
 
+    // Exclude common variant/state properties from being counted as "text content"
+    const EXCLUDED_VARIANT_KEYS = ['state', 'variant', 'size', 'style', 'mode', 'theme', 'type', 'status', 'priority'];
+
     // Check for text content indicators
     const hasTextContent = Object.entries(props).some(([key, value]) => {
         const k = key.toLowerCase();
-        return k.includes('label') || k.includes('text') || k.includes('title') ||
-            (typeof value === 'string' && value.length > 0 && !k.includes('icon'));
+
+        // Skip known variant keys
+        if (EXCLUDED_VARIANT_KEYS.some(ex => k === ex || k === ex.toLowerCase())) return false;
+
+        // Explicitly content-like keys
+        if (k.includes('label') || k.includes('text') || k.includes('title') ||
+            k.includes('content') || k.includes('placeholder') || k.includes('heading') ||
+            k.includes('description') || k.includes('caption')) {
+            return true;
+        }
+
+        // Check value if key is not excluded and not explicitly content
+        if (typeof value === 'string' && value.length > 0 && !k.includes('icon')) {
+            // conservative check: if the key seems like a variant name, ignore it
+            // but if we are here, we passed the EXCLUDED_VARIANT_KEYS check.
+            // Double check if the key is composed of excluded words (e.g. "Button State")
+            if (EXCLUDED_VARIANT_KEYS.some(ex => k.includes(ex))) return false;
+
+            return true;
+        }
+
+        return false;
     }) || name.includes('text') || (!name.includes('icon') && !hasIcon);
 
     return {

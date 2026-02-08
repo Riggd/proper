@@ -205,7 +205,7 @@ export const App: React.FC = () => {
                                 className="scaffold-button"
                                 onClick={handleScaffold}
                             >
-                                🔧 Auto-Scaffold Missing Props
+                                🔧 Fix props
                             </button>
                         )}
 

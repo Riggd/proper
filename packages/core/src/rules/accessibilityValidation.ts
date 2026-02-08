@@ -45,12 +45,34 @@ export function detectButtonVariant(variant: FigmaVariant): ButtonVariantType {
     });
 
     // Check for explicit text/label properties or naming
+    // Exclude common variant/state properties from being counted as "text content"
+    const EXCLUDED_VARIANT_KEYS = ['state', 'variant', 'size', 'style', 'mode', 'theme', 'type', 'status', 'priority'];
+
+    // Check for explicit text/label properties or naming
     const hasTextProp = Object.entries(props).some(([key, value]) => {
         const k = key.toLowerCase();
+
+        // Skip known variant keys
+        if (EXCLUDED_VARIANT_KEYS.some(ex => k === ex || k === ex.toLowerCase())) return false;
+
+        // Explicitly content-like keys
+        if (k.includes('label') || k.includes('text') || k.includes('title') ||
+            k.includes('content') || k.includes('placeholder') || k.includes('heading') ||
+            k.includes('description') || k.includes('caption')) {
+            return true;
+        }
+
         const v = String(value).toLowerCase();
         // Look for label, text, title, or non-empty string content
-        return k.includes('label') || k.includes('text') || k.includes('title') ||
-            (typeof value === 'string' && value.length > 0 && !k.includes('icon'));
+        // (typeof value === 'string' && value.length > 0 && !k.includes('icon'));
+
+        if (typeof value === 'string' && value.length > 0 && !k.includes('icon')) {
+            // conservative check: if the key seems like a variant name, ignore it
+            if (EXCLUDED_VARIANT_KEYS.some(ex => k.includes(ex))) return false;
+            return true;
+        }
+
+        return false;
     });
 
     // Check naming convention: "Icon Button" or "IconButton" often indicates icon-only
