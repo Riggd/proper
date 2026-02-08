@@ -6,7 +6,7 @@
         "dev": "vite",
         "build": "npm run build:ui && npm run build:plugin",
         "build:ui": "vite build",
-        "build:plugin": "esbuild src/plugin/main.ts --bundle --outfile=dist/code.js --target=es2020",
+        "build:plugin": "esbuild src/plugin/main.ts --bundle --outfile=dist/code.js --target=es2020 --supported:optional-chain=false",
         "preview": "vite preview"
     },
     "dependencies": {

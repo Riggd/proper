@@ -8,6 +8,8 @@ export type MessageType =
     | 'AUDIT_RESULT'
     | 'SCAFFOLD_REQUEST'
     | 'SCAFFOLD_COMPLETE'
+    | 'CREATE_PROPS_REQUEST'
+    | 'CREATE_PROPS_COMPLETE'
     | 'DATA_READY'
     | 'ERROR';
 
@@ -62,6 +64,12 @@ export interface ScaffoldCompleteMessage {
     success: boolean;
 }
 
+export interface CreatePropsCompleteMessage {
+    type: 'CREATE_PROPS_COMPLETE';
+    success: boolean;
+    count: number;
+}
+
 export interface DataReadyMessage {
     type: 'DATA_READY';
     selection: SelectionInfo;
@@ -82,16 +90,22 @@ export interface ScaffoldRequestMessage {
     fixes: string[];
 }
 
+export interface CreatePropsRequestMessage {
+    type: 'CREATE_PROPS_REQUEST';
+}
+
 // Union types for type safety
 export type SandboxToUIMessage =
     | SelectionChangedMessage
     | AuditResultMessage
     | DataReadyMessage
     | ScaffoldCompleteMessage
+    | CreatePropsCompleteMessage
     | ErrorMessage;
 
 export type UIToSandboxMessage =
     | AuditRequestMessage
-    | ScaffoldRequestMessage;
+    | ScaffoldRequestMessage
+    | CreatePropsRequestMessage;
 
 export type PluginMessage = SandboxToUIMessage | UIToSandboxMessage;

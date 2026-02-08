@@ -54,6 +54,8 @@ export const App: React.FC = () => {
                         }
                         break;
 
+
+
                     case 'ERROR':
                         setError(msg.message);
                         setState('selected');
@@ -115,6 +117,8 @@ export const App: React.FC = () => {
         postToSandbox({ type: 'SCAFFOLD_REQUEST', fixes });
     };
 
+
+
     // Check if there are fixable issues
     const hasFixableIssues = auditResult?.findings.some(
         f => f.severity === 'error' && f.suggestedFix
@@ -159,7 +163,7 @@ export const App: React.FC = () => {
                 {(state === 'auditing' || state === 'scaffolding') && (
                     <div className="state-auditing">
                         <div className="spinner"></div>
-                        <p>{state === 'scaffolding' ? 'Generating layers...' : 'Auditing...'}</p>
+                        <p>{state === 'scaffolding' ? 'Processing...' : 'Auditing...'}</p>
                     </div>
                 )}
 
@@ -197,6 +201,8 @@ export const App: React.FC = () => {
                                 🔧 Auto-Scaffold Missing Props
                             </button>
                         )}
+
+
 
                         <button
                             className="reaudit-button"

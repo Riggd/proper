@@ -110,6 +110,100 @@ figma.on('selectionchange', () => {
     notifySelectionChanged();
 });
 
+// Listen for document changes to auto-promote props
+let debounceTimer: number | null = null;
+let isProcessingAutoPromote = false; // Guard against re-entry
+
+figma.on('documentchange', (event: DocumentChangeEvent) => {
+    // Skip if we're currently processing to prevent infinite loop
+    if (isProcessingAutoPromote) return;
+
+    // Filter for relevant changes
+    const relevantChanges = event.documentChanges.filter(change => {
+        // We only care about property changes or creation of text layers inside "Code only props"
+        if (change.type === 'PROPERTY_CHANGE' || change.type === 'CREATE') {
+            const node = change.node;
+            // Check if node is valid and not removed
+            if ('name' in node && !node.removed) {
+                // check if node is "Code only props" frame or inside it
+                if (node.name === 'Code only props') return true;
+                if (node.parent && 'name' in node.parent && node.parent.name === 'Code only props') return true;
+            }
+        }
+        return false;
+    });
+
+    if (relevantChanges.length > 0) {
+        // Dedup targets to process - find the component/component set, not individual variants
+        const targetsToProcess = new Set<string>();
+
+        for (const change of relevantChanges) {
+            if (change.type === 'PROPERTY_CHANGE' || change.type === 'CREATE') {
+                const node = change.node;
+                if ('name' in node && !node.removed) {
+                    // Navigate up to find the component or component set
+                    let targetId: string | null = null;
+
+                    if (node.name === 'Code only props') {
+                        // node is the frame, parent is the component/variant
+                        const parent = node.parent;
+                        if (parent) {
+                            // If parent is a variant, go up to the component set
+                            if (parent.parent?.type === 'COMPONENT_SET') {
+                                targetId = parent.parent.id;
+                            } else {
+                                targetId = parent.id;
+                            }
+                        }
+                    } else if (node.parent && 'name' in node.parent && node.parent.name === 'Code only props') {
+                        // node is a text layer inside "Code only props"
+                        const codeOnlyFrame = node.parent;
+                        const variant = codeOnlyFrame.parent;
+                        if (variant) {
+                            // If variant's parent is a component set, use that
+                            if (variant.parent?.type === 'COMPONENT_SET') {
+                                targetId = variant.parent.id;
+                            } else {
+                                targetId = variant.id;
+                            }
+                        }
+                    }
+
+                    if (targetId) targetsToProcess.add(targetId);
+                }
+            }
+        }
+
+        // Process with debounce
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+
+        debounceTimer = setTimeout(async () => {
+            isProcessingAutoPromote = true;
+            try {
+                for (const id of targetsToProcess) {
+                    if (!id) continue;
+                    const node = figma.getNodeById(id) as SceneNode;
+                    if (node) {
+                        try {
+                            const count = await createPropsFromTextLayers(node);
+                            if (count > 0) {
+                                figma.notify(`Auto-promoted ${count} props`);
+                            }
+                        } catch (e) {
+                            console.error('Auto-promote failed', e);
+                        }
+                    }
+                }
+            } finally {
+                isProcessingAutoPromote = false;
+            }
+            debounceTimer = null;
+        }, 500); // 500ms debounce
+    }
+});
+
 // Send initial selection state
 notifySelectionChanged();
 
@@ -148,10 +242,15 @@ figma.ui.onmessage = async (msg) => {
             // Create "Code Only Props" frame structure (Nathan Curtis pattern)
             await generateCodeOnlyPropsFrame(targetNode, fixes);
 
+            // Immediately create and bind the component properties
+            const propsCreated = await createPropsFromTextLayers(targetNode);
+
             postToUI({
                 type: 'SCAFFOLD_COMPLETE',
                 success: true,
             });
+
+            figma.notify(`Scaffolded ${fixes.length} layers and created ${propsCreated} properties`);
         } catch (error: any) {
             postToUI({
                 type: 'ERROR',
@@ -159,6 +258,8 @@ figma.ui.onmessage = async (msg) => {
             });
         }
     }
+
+
 };
 
 /**
@@ -219,6 +320,11 @@ async function generateCodeOnlyPropsFrame(node: SceneNode, props: string[]): Pro
         codeOnlyFrame.x = 0;
         codeOnlyFrame.y = 0;
 
+        // Ensure it doesn't break auto-layout
+        if ('layoutPositioning' in codeOnlyFrame) {
+            codeOnlyFrame.layoutPositioning = 'ABSOLUTE';
+        }
+
         // Remove fills/strokes to make it invisible ensuring it doesn't affect visual design
         codeOnlyFrame.fills = [];
         codeOnlyFrame.strokes = [];
@@ -255,4 +361,118 @@ async function generateCodeOnlyPropsFrame(node: SceneNode, props: string[]): Pro
         // Lock the frame to prevent accidental edits
         codeOnlyFrame.locked = true;
     }
+}
+
+/**
+ * createPropsFromTextLayers
+ * Scans the "Code only props" frame and creates text properties for each text layer
+ */
+async function createPropsFromTextLayers(node: SceneNode): Promise<number> {
+    const parentComponentSet = node.type === 'COMPONENT_SET' ? node : (node.parent?.type === 'COMPONENT_SET' ? node.parent : null);
+    const targetRoot = parentComponentSet || node;
+
+    if (targetRoot.type !== 'COMPONENT_SET' && targetRoot.type !== 'COMPONENT') {
+        throw new Error('Target must be a Component or Component Set');
+    }
+
+    let propsCreated = 0;
+
+    // Determine nodes to scan
+    let scanNodes: SceneNode[] = [];
+    if (node.type === 'COMPONENT_SET') {
+        scanNodes = node.children as SceneNode[];
+    } else {
+        scanNodes = [node];
+    }
+
+    // Get existing props ONCE for the whole component (not per variant)
+    const existingProps = (targetRoot as ComponentSetNode | ComponentNode).componentPropertyDefinitions;
+
+    for (const scanNode of scanNodes) {
+        // Find "Code only props" frame
+        let codeOnlyFrame: FrameNode | null = null;
+        if ('children' in scanNode) {
+            for (const child of (scanNode as any).children) {
+                if (child.name === 'Code only props' && child.type === 'FRAME') {
+                    codeOnlyFrame = child as FrameNode;
+                    break;
+                }
+            }
+        }
+
+        if (!codeOnlyFrame) {
+            // It's possible some variants don't have the frame, skip them
+            continue;
+        }
+
+        // Process text nodes
+        for (const child of codeOnlyFrame.children) {
+            if (child.type !== 'TEXT') continue;
+
+            const propName = child.name; // Use layer name as prop name
+
+            // Search for existing property by name
+            // Property keys can be: "propName" or "propName#123:456"
+            let existingId: string | undefined = undefined;
+
+            for (const [key, def] of Object.entries(existingProps)) {
+                // Check if key starts with propName (handles both "propName" and "propName#123:456")
+                if (key === propName || key.startsWith(propName + '#')) {
+                    existingId = key;
+                    break;
+                }
+                // Also check displayName for safety
+                const defAny = def as any;
+                if (defAny.displayName === propName || defAny.name === propName) {
+                    existingId = key;
+                    break;
+                }
+            }
+
+            if (existingId) {
+                // Property already exists, just bind if not already bound
+                try {
+                    const currentBinding = child.componentPropertyReferences?.characters;
+                    if (currentBinding !== existingId) {
+                        child.componentPropertyReferences = Object.assign({}, child.componentPropertyReferences, {
+                            characters: existingId,
+                        });
+                        propsCreated++;
+                    }
+                } catch (e) {
+                    console.warn(`Failed to bind existing property ${existingId} to layer`, e);
+                }
+            } else {
+                // Create new property
+                try {
+                    // Extract default value from text content if possible
+                    let defaultValue = "";
+                    const content = child.characters;
+                    if (content.includes(':')) {
+                        const parts = content.split(':');
+                        if (parts.length > 1) {
+                            defaultValue = parts.slice(1).join(':').trim();
+                            if (defaultValue === '[value]') defaultValue = "";
+                        }
+                    }
+
+                    // Create property on the Component or Component Set
+                    const newPropId = await (targetRoot as ComponentSetNode | ComponentNode).addComponentProperty(propName, 'TEXT', defaultValue);
+
+                    // Immediately add to our tracking so we don't create it again for other variants
+                    (existingProps as any)[newPropId] = { type: 'TEXT', defaultValue };
+
+                    // Bind the text characters to the property
+                    child.componentPropertyReferences = Object.assign({}, child.componentPropertyReferences, {
+                        characters: newPropId,
+                    });
+                    propsCreated++;
+                } catch (e) {
+                    console.error(`Failed to create property ${propName}`, e);
+                }
+            }
+        }
+    }
+
+    return propsCreated;
 }
