@@ -230,6 +230,22 @@
     color: #3498db;
 }
 
+.finding-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.finding-reason {
+    margin: 8px 0 0;
+    padding: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--figma-color-text-secondary);
+    background: var(--figma-color-bg);
+    border-radius: 4px;
+}
+
 /* Scaffold Button */
 .scaffold-button {
     width: 100%;

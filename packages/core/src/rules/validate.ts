@@ -2,6 +2,7 @@ import { FigmaComponentSet } from '../types/figma';
 import { validateBooleanState } from './booleanStateValidation';
 import { validateAccessibility, AccessibilityFinding } from './accessibilityValidation';
 import { validateTokenUsage, TokenFinding } from './tokenUsageValidation';
+import { validateComponentProps, ComponentPropsFinding } from './componentPropsValidation';
 
 /**
  * Package version for parity checks across workspaces.
@@ -27,6 +28,8 @@ export interface AuditFinding {
     rule?: string;
     suggestedFix?: string;
     suggestedToken?: string;
+    /** Educational explanation of WHY this matters for engineering */
+    reason?: string;
 }
 
 /**
@@ -58,6 +61,7 @@ export function validate(componentSet: FigmaComponentSet): AuditResult {
             message: finding.message,
             nodeId: finding.nodeId,
             rule: finding.rule,
+            suggestedFix: finding.suggestedFix,
         });
     }
 
@@ -70,6 +74,7 @@ export function validate(componentSet: FigmaComponentSet): AuditResult {
             nodeId: finding.nodeId,
             rule: finding.rule,
             suggestedFix: finding.suggestedFix,
+            reason: finding.reason,
         });
     }
 
@@ -82,6 +87,19 @@ export function validate(componentSet: FigmaComponentSet): AuditResult {
             nodeId: finding.nodeId,
             rule: finding.rule,
             suggestedToken: finding.suggestedToken,
+        });
+    }
+
+    // Run component props validation (based on componentPropsRules)
+    const componentPropsFindings = validateComponentProps(componentSet) as ComponentPropsFinding[];
+    for (const finding of componentPropsFindings) {
+        findings.push({
+            severity: SEVERITY_MAP[finding.type] ?? 'info',
+            message: finding.message,
+            nodeId: finding.nodeId,
+            rule: finding.rule,
+            suggestedFix: finding.suggestedFix,
+            reason: finding.reason,
         });
     }
 

@@ -26,6 +26,7 @@ export interface ValidationFinding {
     message: string;
     nodeId?: string;
     rule?: string;
+    suggestedFix?: string;
 }
 
 export type ComponentType = 'Button' | 'Input' | 'Card' | 'Unknown';

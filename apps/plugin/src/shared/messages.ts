@@ -40,6 +40,8 @@ export interface AuditFinding {
     message: string;
     rule?: string;
     suggestedFix?: string;
+    /** Educational explanation of WHY this matters for engineering */
+    reason?: string;
 }
 
 export interface AuditResult {

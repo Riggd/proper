@@ -108,9 +108,9 @@ export const App: React.FC = () => {
     const handleScaffold = () => {
         if (!auditResult) return;
 
-        // Extract fixable issues (errors related to missing props)
+        // Extract fixable issues (errors and warnings with suggested fixes)
         const fixes = auditResult.findings
-            .filter(f => f.severity === 'error' && f.suggestedFix)
+            .filter(f => (f.severity === 'error' || f.severity === 'warning') && f.suggestedFix)
             .map(f => f.suggestedFix as string);
 
         setState('scaffolding');
@@ -119,9 +119,9 @@ export const App: React.FC = () => {
 
 
 
-    // Check if there are fixable issues
+    // Check if there are fixable issues (errors or warnings with a suggested fix)
     const hasFixableIssues = auditResult?.findings.some(
-        f => f.severity === 'error' && f.suggestedFix
+        f => (f.severity === 'error' || f.severity === 'warning') && f.suggestedFix
     );
 
     return (
@@ -182,12 +182,19 @@ export const App: React.FC = () => {
                             <div className="findings">
                                 {auditResult.findings.map((finding, i) => (
                                     <div key={i} className={`finding ${finding.severity}`}>
-                                        <span className="finding-severity">
-                                            {finding.severity.toUpperCase()}
-                                        </span>
-                                        <span className="finding-message">
-                                            {finding.message}
-                                        </span>
+                                        <div className="finding-header">
+                                            <span className="finding-severity">
+                                                {finding.severity.toUpperCase()}
+                                            </span>
+                                            <span className="finding-message">
+                                                {finding.message}
+                                            </span>
+                                        </div>
+                                        {finding.reason && (
+                                            <p className="finding-reason">
+                                                {finding.reason}
+                                            </p>
+                                        )}
                                     </div>
                                 ))}
                             </div>

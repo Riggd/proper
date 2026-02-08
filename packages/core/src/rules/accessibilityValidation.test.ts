@@ -1,10 +1,84 @@
 import { describe, it, expect } from 'vitest';
-import { validateAccessibility, InteractiveComponents } from './accessibilityValidation';
-import { FigmaComponentSet } from '../types/figma';
+import {
+    validateAccessibility,
+    InteractiveComponents,
+    detectButtonVariant,
+    ButtonVariantType
+} from './accessibilityValidation';
+import { FigmaComponentSet, FigmaVariant } from '../types/figma';
+
+describe('detectButtonVariant', () => {
+    it('should detect icon-only button from variant name', () => {
+        const variant: FigmaVariant = {
+            id: '1:1',
+            name: 'Type=Icon-Only',
+            properties: {},
+        };
+
+        expect(detectButtonVariant(variant)).toBe('icon-only');
+    });
+
+    it('should detect icon-only button from icon property', () => {
+        const variant: FigmaVariant = {
+            id: '1:1',
+            name: 'State=Default',
+            properties: { Icon: 'search' },
+        };
+
+        expect(detectButtonVariant(variant)).toBe('icon-only');
+    });
+
+    it('should detect text button when no icon indicators', () => {
+        const variant: FigmaVariant = {
+            id: '1:1',
+            name: 'State=Default',
+            properties: { Label: 'Submit' },
+        };
+
+        expect(detectButtonVariant(variant)).toBe('text');
+    });
+
+    it('should detect icon-text button with both properties', () => {
+        const variant: FigmaVariant = {
+            id: '1:1',
+            name: 'State=Default',
+            properties: { Icon: 'check', Label: 'Confirm' },
+        };
+
+        expect(detectButtonVariant(variant)).toBe('icon-text');
+    });
+
+    it('should default to text for ambiguous variants', () => {
+        const variant: FigmaVariant = {
+            id: '1:1',
+            name: 'State=Default',
+            properties: {},
+        };
+
+        expect(detectButtonVariant(variant)).toBe('text');
+    });
+});
 
 describe('validateAccessibility', () => {
-    describe('Button component', () => {
-        it('should return error when missing accessibility label', () => {
+    describe('Button component - text buttons', () => {
+        it('should pass for text button without aria-label (gets name from text)', () => {
+            const componentSet: FigmaComponentSet = {
+                id: '1:1',
+                name: 'Button',
+                type: 'COMPONENT_SET',
+                componentType: 'Button',
+                variants: [
+                    { id: '1:2', name: 'State=Default', properties: { Label: 'Submit' } },
+                ],
+            };
+
+            const findings = validateAccessibility(componentSet);
+
+            expect(findings).toEqual([]);
+        });
+
+        it('should pass for text button even without any properties', () => {
+            // Empty properties defaults to text button assumption (conservative)
             const componentSet: FigmaComponentSet = {
                 id: '1:1',
                 name: 'Button',
@@ -17,26 +91,45 @@ describe('validateAccessibility', () => {
 
             const findings = validateAccessibility(componentSet);
 
+            expect(findings).toEqual([]);
+        });
+    });
+
+    describe('Button component - icon-only buttons', () => {
+        it('should return error for icon-only button missing aria-label', () => {
+            const componentSet: FigmaComponentSet = {
+                id: '1:1',
+                name: 'Icon Button',
+                type: 'COMPONENT_SET',
+                componentType: 'Button',
+                variants: [
+                    { id: '1:2', name: 'Type=Icon-Only', properties: { Icon: 'search' } },
+                ],
+            };
+
+            const findings = validateAccessibility(componentSet);
+
             expect(findings).toContainEqual(
                 expect.objectContaining({
                     type: 'Error',
-                    message: 'Missing accessibility label',
+                    message: 'Icon-only button variant(s) missing accessibility label',
                     suggestedFix: 'aria-label',
+                    reason: expect.stringContaining('screen readers'),
                 })
             );
         });
 
-        it('should pass when aria-label is present', () => {
+        it('should pass for icon-only button with aria-label', () => {
             const componentSet: FigmaComponentSet = {
                 id: '1:1',
-                name: 'Button',
+                name: 'Icon Button',
                 type: 'COMPONENT_SET',
                 componentType: 'Button',
                 variants: [
                     {
                         id: '1:2',
-                        name: 'State=Default',
-                        properties: { 'aria-label': 'Submit button' }
+                        name: 'Type=Icon-Only',
+                        properties: { Icon: 'search', 'aria-label': 'Search' }
                     },
                 ],
             };
@@ -46,7 +139,7 @@ describe('validateAccessibility', () => {
             expect(findings).toEqual([]);
         });
 
-        it('should pass when accessibilityLabel is present', () => {
+        it('should pass for icon-only button with accessibilityLabel', () => {
             const componentSet: FigmaComponentSet = {
                 id: '1:1',
                 name: 'Button',
@@ -55,8 +148,8 @@ describe('validateAccessibility', () => {
                 variants: [
                     {
                         id: '1:2',
-                        name: 'State=Default',
-                        properties: { 'accessibilityLabel': 'Submit' }
+                        name: 'Type=Icon-Only',
+                        properties: { Icon: 'close', accessibilityLabel: 'Close' }
                     },
                 ],
             };
@@ -87,6 +180,22 @@ describe('validateAccessibility', () => {
                     message: 'Missing accessibility label',
                 })
             );
+        });
+
+        it('should pass when aria-label is present', () => {
+            const componentSet: FigmaComponentSet = {
+                id: '2:1',
+                name: 'Input',
+                type: 'COMPONENT_SET',
+                componentType: 'Input',
+                variants: [
+                    { id: '2:2', name: 'State=Default', properties: { 'aria-label': 'Email' } },
+                ],
+            };
+
+            const findings = validateAccessibility(componentSet);
+
+            expect(findings).toEqual([]);
         });
     });
 

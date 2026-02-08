@@ -37,6 +37,7 @@ export function validateBooleanState(componentSet: FigmaComponentSet): Validatio
                 message: `Missing required state: ${state}`,
                 nodeId: componentSet.id,
                 rule: 'boolean-state-validation',
+                suggestedFix: state,
             });
         }
     }

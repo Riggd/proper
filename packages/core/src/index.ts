@@ -5,3 +5,6 @@ export * from './rules/booleanStateValidation';
 export * from './rules/accessibilityValidation';
 export * from './rules/tokenUsageValidation';
 export * from './rules/validate';
+export * from './rules/componentPropsRules';
+export * from './rules/protectedWords';
+export * from './rules/componentPropsValidation';
